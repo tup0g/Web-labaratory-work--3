@@ -6,10 +6,10 @@
 
 | Рівень | Технологія |
 |--------|-----------|
-| Frontend | React 18 + TypeScript + Vite |
+| Frontend | React Native (Expo) + TypeScript |
 | Backend | Node.js + Express + TypeScript |
 | База даних | SQLite (через пакет `sqlite3`) |
-| Роутинг | React Router DOM v6 |
+| Роутинг | React Navigation (Native Stack) |
 | HTTP клієнт | Axios |
 
 ## Запуск проєкту
@@ -21,39 +21,36 @@ npm install
 npm run dev
 ```
 
-### Frontend (порт 5173)
+### Frontend (React Native - Expo)
 ```bash
-cd frontend
+cd mobile
 npm install
-npm run dev
+npm run web      # для запуску в браузері (найшвидше для скріншотів)
+npm run android  # для запуску на Android емуляторі
+npm run ios      # для запуску на iOS симуляторі
 ```
-
-Відкрийте http://localhost:5173
 
 ## Структура проєкту
 
 ```
 Lab 3 Web/
-├── backend/
-│   ├── src/
-│   │   ├── db/database.ts          # Підключення до SQLite
-│   │   ├── models/Pizza.ts         # Інтерфейс Pizza
-│   │   ├── dao/PizzaDAO.ts         # Data Access Object
-│   │   ├── controllers/PizzaController.ts
-│   │   ├── routes/pizzaRoutes.ts
-│   │   └── index.ts                # Express сервер
-│   └── tsconfig.json
-├── frontend/
+├── backend/                  # Node.js + SQLite Backend
 │   └── src/
-│       ├── api/pizzaApi.ts         # HTTP запити
-│       ├── types/Pizza.ts          # Типи TypeScript
-│       ├── pages/
-│       │   ├── PizzaList.tsx       # Список піц (екран 1)
-│       │   └── PizzaForm.tsx       # Форма створення/редагування (екран 2)
-│       ├── App.tsx
-│       └── index.css
-├── database.sqlite                  # Файл БД (автостворюється)
-└── .gitignore
+│       ├── db/database.ts          
+│       ├── models/Pizza.ts         
+│       ├── dao/PizzaDAO.ts         
+│       ├── controllers/PizzaController.ts
+│       ├── routes/pizzaRoutes.ts
+│       └── index.ts                
+├── mobile/                   # React Native (Expo) застосунок
+│   ├── src/
+│   │   ├── api/pizzaApi.ts         
+│   │   ├── types/Pizza.ts          
+│   │   └── screens/
+│   │       ├── PizzaListScreen.tsx # Список піц (екран 1)
+│   │       └── PizzaFormScreen.tsx # Форма (екран 2)
+│   ├── App.tsx               # Навігація
+│   └── app.json
 ```
 
 ## API Endpoints
