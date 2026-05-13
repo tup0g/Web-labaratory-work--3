@@ -1,7 +1,11 @@
 import axios from 'axios';
-import { Pizza } from '../types/Pizza';
+import { Platform } from 'react-native';
+import type { Pizza } from '../types/Pizza';
 
-const BASE = 'http://localhost:3001/api/pizzas';
+// For Android emulator, localhost is 10.0.2.2
+const BASE = Platform.OS === 'android' 
+  ? 'http://10.0.2.2:3001/api/pizzas' 
+  : 'http://localhost:3001/api/pizzas';
 
 export const pizzaApi = {
   getAll: () => axios.get<Pizza[]>(BASE).then(r => r.data),
