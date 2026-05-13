@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { pizzaApi } from '../api/pizzaApi';
-import { Pizza } from '../types/Pizza';
+import type { Pizza } from '../types/Pizza';
 
 const SIZES: Array<Pizza['size']> = ['Мала', 'Середня', 'Велика'];
 

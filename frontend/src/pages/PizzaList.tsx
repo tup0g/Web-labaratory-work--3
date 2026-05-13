@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { pizzaApi } from '../api/pizzaApi';
-import { Pizza } from '../types/Pizza';
+import type { Pizza } from '../types/Pizza';
 
 const SIZES: Record<string, string> = { 'Мала': '🍕 Мала', 'Середня': '🍕🍕 Середня', 'Велика': '🍕🍕🍕 Велика' };
 const EMOJI = ['🍕', '🫓', '🧀', '🌶️', '🍖'];
@@ -16,7 +16,6 @@ interface DeleteModal { id: number; name: string }
 
 export default function PizzaList() {
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
-  const [filtered, setFiltered] = useState<Pizza[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
@@ -24,30 +23,26 @@ export default function PizzaList() {
   const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
-  async function load() {
+  async function fetchPizzas() {
     try {
-      setLoading(true);
       setError('');
       const data = await pizzaApi.getAll();
       setPizzas(data);
-      setFiltered(data);
     } catch {
       setError('Помилка в опрацюванні запиту');
-    } finally {
-      setLoading(false);
     }
   }
 
-  useEffect(() => { load(); }, []);
-
   useEffect(() => {
-    const q = search.toLowerCase();
-    setFiltered(pizzas.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.size.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q)
-    ));
-  }, [search, pizzas]);
+    fetchPizzas().finally(() => setLoading(false));
+  }, []);
+
+  const q = search.toLowerCase();
+  const filtered = pizzas.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.size.toLowerCase().includes(q) ||
+    p.description.toLowerCase().includes(q)
+  );
 
   async function confirmDelete() {
     if (!deleteModal) return;
@@ -55,7 +50,7 @@ export default function PizzaList() {
       setDeleting(true);
       await pizzaApi.delete(deleteModal.id!);
       setDeleteModal(null);
-      load();
+      await fetchPizzas();
     } catch {
       setError('Помилка в опрацюванні запиту');
       setDeleteModal(null);
