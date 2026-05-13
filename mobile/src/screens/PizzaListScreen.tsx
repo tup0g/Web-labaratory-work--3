@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ActivityIndicator, Alert, SafeAreaView, Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { pizzaApi } from '../api/pizzaApi';
@@ -41,6 +41,13 @@ export default function PizzaListScreen({ navigation }: Props) {
   );
 
   const confirmDelete = (id: number, name: string) => {
+    if (Platform.OS === 'web') {
+      if (window.confirm(`Видалити піцу? «${name}» буде видалено назавжди.`)) {
+        pizzaApi.delete(id).then(load).catch(() => window.alert('Помилка в опрацюванні запиту'));
+      }
+      return;
+    }
+    
     Alert.alert('Видалити піцу?', `«${name}» буде видалено назавжди.`, [
       { text: 'Скасувати', style: 'cancel' },
       {
@@ -112,7 +119,13 @@ export default function PizzaListScreen({ navigation }: Props) {
               
               <View style={styles.cardFooter}>
                 <Text style={styles.price}>{item.price.toFixed(0)} ₴</Text>
-                <TouchableOpacity style={styles.delBtn} onPress={() => confirmDelete(item.id!, item.name)}>
+                <TouchableOpacity style={styles.delBtn} onPress={(e) => {
+                  if (Platform.OS === 'web') {
+                    // @ts-ignore
+                    e.stopPropagation();
+                  }
+                  confirmDelete(item.id!, item.name);
+                }}>
                   <Text style={styles.delBtnText}>Видалити</Text>
                 </TouchableOpacity>
               </View>
